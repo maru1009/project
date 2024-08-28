@@ -1,0 +1,18 @@
+.header-section{ 
+    display: flex;
+}
+
+
+.first-section{ 
+    display: flex;
+    flex-direction: column;
+
+
+}
+
+.second-section{ 
+    display: flex;
+    flex-direction: column;
+
+
+}
