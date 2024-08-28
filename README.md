@@ -1,2 +1,1 @@
-# project
-my project
+First ever react project 
