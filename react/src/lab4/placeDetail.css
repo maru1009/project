@@ -1,0 +1,32 @@
+/* src/lab4/placeDetail.css */
+.place-detail-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Align text to the left for better readability */
+    font-family: Arial, sans-serif; /* Use a common font */
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.place-image {
+    width: 100%; /* Responsive image */
+    border-radius: 8px; /* Rounded corners for the image */
+    margin-bottom: 20px; /* Space below the image */
+}
+
+p {
+    margin-bottom: 15px; /* Space between paragraphs */
+    color: #555; /* A softer text color */
+}
+
+strong {
+    color: #333; /* Strong text color for emphasis */
+}

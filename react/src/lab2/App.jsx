@@ -1,7 +1,11 @@
 import React, {useState, useRef, useEffect} from "react";
 import FruitList from "./FruitList";
 import {v4 as uuidv4} from 'uuid'; 
+import './App.css';
+
+
 const LOCAL_STORAGE_KEY = 'fruitApp.fruits'
+
 
 function App() {
     const [fruits, setFruits] = useState([])

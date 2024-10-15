@@ -1,0 +1,48 @@
+/* CountryDetails.css */
+
+.country-details-container {
+    max-width: 800px; /* Set a maximum width for the container */
+    margin: 20px auto; /* Center the container */
+    padding: 20px;
+    background-color: #fff; /* White background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  .country-name {
+    font-size: 2rem; /* Larger font size for the country name */
+    margin-bottom: 20px; /* Space below the country name */
+    text-align: center; /* Center the text */
+  }
+  
+  .country-flag {
+    display: block; /* Center the image */
+    margin: 0 auto; /* Center the image */
+    width: 150px; /* Set flag size */
+  }
+  
+  .country-info {
+    font-size: 1.1rem; /* Slightly larger text */
+    line-height: 1.6; /* More space between lines */
+    margin: 20px 0; /* Space around info section */
+  }
+  
+  .country-info p {
+    margin: 5px 0; /* Space between paragraphs */
+  }
+  
+  .google-maps-link {
+    display: inline-block; /* Make the link like a button */
+    padding: 10px 15px; /* Padding for the button */
+    background-color: #007bff; /* Primary color */
+    color: white; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s; /* Transition effect */
+    text-align: center; /* Center the text */
+  }
+  
+  .google-maps-link:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  

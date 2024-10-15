@@ -1,0 +1,84 @@
+/* App.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  
+  .country-list-container {
+    max-width: 800px; /* Increased width */
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  
+  .country-list {
+    max-height: 500px; /* Increased height */
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .country-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .country-item:last-child {
+    border-bottom: none; /* Remove border for the last item */
+  }
+  
+  .country-flag {
+    width: auto;
+    height: auto;
+    margin-right: 10px;
+  }
+  
+  .country-link {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .country-link:hover {
+    color: #007bff; /* Change color on hover */
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Allow wrapping for buttons */
+  }
+  
+  .pagination-button {
+    margin: 5px; /* Space around buttons */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex: 0 1 calc(10% - 10px); /* Set width to fit 10 buttons in a row */
+  }
+  
+  .pagination-button:hover {
+    background-color: #0056b3;
+  }
+  
