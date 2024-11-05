@@ -1,7 +1,7 @@
 // src/lab4/Login.jsx
 import React, { useState } from 'react';
 import { useAuth } from './UserContext';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
@@ -9,11 +9,11 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => { // Make this function asynchronous
         e.preventDefault();
-        const isLoggedIn = login(username, password);
+        const isLoggedIn = await login(username, password); // Await the login response
         if (!isLoggedIn) {
             setError('Invalid username or password'); // Set error message if login fails
         } else {

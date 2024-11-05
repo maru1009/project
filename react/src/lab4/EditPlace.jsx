@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import './edit.css';
+import './EditPlace.css';
 
 const EditPlace = () => {
     const { addPlace, updatePlace, username, places } = useAuth();

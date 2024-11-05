@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useAuth } from './UserContext';
 import { useNavigate, Link } from 'react-router-dom';
-import './register.css';
+import './Register.css';
 
 const Register = () => {
     const { register } = useAuth();
@@ -11,9 +11,9 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const isSuccess = register(username, password);
+        const isSuccess = await register(username, password); // Await the register function
         
         if (isSuccess) {
             navigate('/'); // Navigate to the home page on successful registration
