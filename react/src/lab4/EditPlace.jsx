@@ -1,9 +1,9 @@
-// src/lab4/EditPlace.jsx
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import './EditPlace.css';
+import './EditPlace.css'
 
 const EditPlace = () => {
     const { addPlace, updatePlace, username, places } = useAuth();
@@ -26,7 +26,7 @@ const EditPlace = () => {
         try {
             const response = await axios.get(`https://api.positionstack.com/v1/forward`, {
                 params: {
-                    access_key: 'YOUR_POSITIONSTACK_API_KEY', // Replace with your PositionStack API key
+                    access_key: 'YOUR_POSITIONSTACK_API_KEY',
                     query: address,
                 },
             });
@@ -64,10 +64,10 @@ const EditPlace = () => {
 
     return (
         <div className="edit-place-container">
-            <h2>{pid ? 'Edit Place' : 'Add New Place'}</h2>
+            <h2>{pid ? 'Мэдээллийг өөрчлөх' : 'Газар нэмэх'}</h2>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Name:
+                    нэр:
                     <input
                         type="text"
                         value={place.name}
@@ -77,7 +77,7 @@ const EditPlace = () => {
                 </label>
                 <br />
                 <label>
-                    Image URL:
+                    Зураг:
                     <input
                         type="text"
                         value={place.image}
@@ -87,7 +87,7 @@ const EditPlace = () => {
                 </label>
                 <br />
                 <label>
-                    Description:
+                    Тайлбар:
                     <textarea
                         value={place.description}
                         onChange={(e) => setPlace({ ...place, description: e.target.value })}
@@ -96,7 +96,7 @@ const EditPlace = () => {
                 </label>
                 <br />
                 <label>
-                    Address:
+                    Хаяг:
                     <input
                         type="text"
                         value={place.address}
@@ -104,12 +104,12 @@ const EditPlace = () => {
                         required
                     />
                 </label>
-                <button type="button" onClick={() => fetchCoordinates(place.address)}>
+                {/* <button type="button" onClick={() => fetchCoordinates(place.address)}>
                     Get Coordinates
-                </button>
+                </button> */}
                 {error && <p className="error-message">{error}</p>}
                 <br />
-                <button type="submit">{pid ? 'Update Place' : 'Add Place'}</button>
+                <button type="submit">{pid ? 'Газрын мэдээлэл шинэчлэх' : 'Газар нэмэх'}</button>
             </form>
 
             {/* Google Maps link */}

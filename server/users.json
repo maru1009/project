@@ -1,0 +1,68 @@
+[
+  {
+      "id": "1",
+      "userId": "1",
+      "title": "Central Park",
+      "description": "A large public park in New York City.",
+      "address": "New York, NY 10024, USA",
+      "location": {
+          "longitude": -73.9654,
+          "latitude": 40.7851
+      }
+  },
+  {
+      "id": "2",
+      "userId": "1",
+      "title": "Statue of Liberty",
+      "description": "A colossal neoclassical sculpture on Liberty Island.",
+      "address": "Liberty Island, New York, NY 10004, USA",
+      "location": {
+          "longitude": -74.0445,
+          "latitude": 40.6892
+      }
+  },
+  {
+      "id": "3",
+      "userId": "2",
+      "title": "Eiffel Tower",
+      "description": "A wrought-iron lattice tower in Paris.",
+      "address": "Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France",
+      "location": {
+          "longitude": 2.2945,
+          "latitude": 48.8584
+      }
+  },
+  {
+      "id": "4",
+      "userId": "2",
+      "title": "Louvre Museum",
+      "description": "The world's largest art museum in Paris.",
+      "address": "Rue de Rivoli, 75001 Paris, France",
+      "location": {
+          "longitude": 2.3364,
+          "latitude": 48.8606
+      }
+  },
+  {
+      "id": "5",
+      "userId": "3",
+      "title": "Sydney Opera House",
+      "description": "A multi-venue performing arts center in Sydney.",
+      "address": "Bennelong Point, Sydney NSW 2000, Australia",
+      "location": {
+          "longitude": 151.2153,
+          "latitude": -33.8568
+      }
+  },
+  {
+      "id": "6",
+      "userId": "3",
+      "title": "Great Barrier Reef",
+      "description": "The world's largest coral reef system located in Australia.",
+      "address": "Great Barrier Reef, Queensland, Australia",
+      "location": {
+          "longitude": 147.6992,
+          "latitude": -18.2871
+      }
+  }
+]

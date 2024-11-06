@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from './UserContext';
-import './PlaceList.css';
+import './PlaceList.css'
 
 const PlaceList = () => {
     const { uid } = useParams();
@@ -16,10 +16,10 @@ const PlaceList = () => {
 
     return (
         <div className="place-list-container">
-            <button className="back-button" onClick={() => navigate('/')}>Back to Home</button>
+            <button className="back-button" onClick={() => navigate('/')}>Нүүр хуудас руу буцах</button>
             <h2>{uid}'s Places</h2>
             {userPlaces.length === 0 ? (
-                <p>No places found for this user.</p>
+                <p>Газар байхгүй байна.</p>
             ) : (
                 userPlaces.map(place => (
                     <div className="place-item" key={place.id}>
@@ -42,7 +42,7 @@ const PlaceList = () => {
             {/* Only show the Add New Place button for the logged-in user */}
             {uid === username && (
                 <Link to="/places/new">
-                    <button className="add-button">Add New Place</button>
+                    <button className="add-button">Газар нэмэх</button>
                 </Link>
             )}
         </div>

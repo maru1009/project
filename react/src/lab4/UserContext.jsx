@@ -1,84 +1,162 @@
-// src/lab4/UserContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Predefined users for demo purposes
-const predefinedUsers = [
-    { name: 'user1', password: 'pass1' },
-    { name: 'user2', password: 'pass2' },
-];
-
-// Initial static places for the users
-const predefinedPlaces = {
-    user1: [
-        { id: '1', name: 'Place A1', image: 'https://via.placeholder.com/150', description: 'User 1 zurag 1' },
-        { id: '2', name: 'Place A2', image: 'https://via.placeholder.com/150', description: 'User 1 zurag 2 ' },
-    ],
-    user2: [
-        { id: '3', name: 'Place B1', image: 'https://via.placeholder.com/150', description: 'User 2 zurag 1' },
-        { id: '4', name: 'Place B2', image: 'https://via.placeholder.com/150', description: 'User 2 zurag 2' },
-    ],
-};
-
+// Define context
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
-    const [users, setUsers] = useState(predefinedUsers); // Initialize with predefined users
-    const [places, setPlaces] = useState(predefinedPlaces); // Initialize with predefined places
+    const [users, setUsers] = useState([]);
+    const [places, setPlaces] = useState({});
 
+    // Fetch users from server
     useEffect(() => {
-        const storedUsername = localStorage.getItem('username');
-        if (storedUsername) {
-            setIsLoggedIn(true);
-            setUsername(storedUsername);
-        }
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/users');
+                const data = await response.json();
+                setUsers(data.users);
+                fetchAllPlaces(data.users);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+
+        fetchUsers();
     }, []);
 
-    const login = (userInput, password) => {
-        const user = users.find(user => user.name === userInput && user.password === password);
-        if (user) {
-            setIsLoggedIn(true);
-            setUsername(userInput);
-            localStorage.setItem('username', userInput);
-            return true;
+    // Fetch all places for all users
+    const fetchAllPlaces = async (users) => {
+        try {
+            const allPlaces = {};
+            for (const user of users) {
+                const response = await fetch(`http://localhost:3000/api/places/user/${user.id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    allPlaces[user.name] = data.places; // Use user name as the key
+                } else {
+                    console.error(`Error fetching places for ${user.name}:`, await response.json());
+                }
+            }
+            setPlaces(allPlaces);
+        } catch (error) {
+            console.error('Error fetching all places:', error);
         }
-        return false;
+    };
+
+    const login = async (userInput, password) => {
+        try {
+            const response = await fetch('http://localhost:3000/api/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: userInput, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setIsLoggedIn(true);
+                setUsername(data.user.name);
+                return true;
+            } else {
+                console.error('Login failed:', await response.json());
+                return false;
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+            return false;
+        }
     };
 
     const logout = () => {
         setIsLoggedIn(false);
         setUsername('');
-        localStorage.removeItem('username');
     };
 
-    const register = (newUsername, newPassword) => {
-        const userExists = users.some(user => user.name === newUsername);
-        if (userExists) {
+    const register = async (newUsername, newPassword) => {
+        try {
+            const response = await fetch('http://localhost:3000/api/users/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newUsername, password: newPassword }),
+            });
+
+            if (response.ok) {
+                const newUser = await response.json();
+                setUsers([...users, newUser]);
+                setPlaces(prevPlaces => ({ ...prevPlaces, [newUsername]: [] }));
+                return true;
+            } else {
+                console.error('Registration failed:', await response.json());
+                return false;
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
             return false;
         }
-        const newUser = { name: newUsername, password: newPassword };
-        setUsers([...users, newUser]); // Add new user to users array
-        setPlaces({ ...places, [newUsername]: [] }); // Add new user with empty places
-        return true;
     };
 
-    const addPlace = (username, newPlace) => {
-        setPlaces(prevPlaces => ({
-            ...prevPlaces,
-            [username]: [...(prevPlaces[username] || []), newPlace]
-        }));
+    const addPlace = async (username, newPlace) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/users/${username}/places`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newPlace),
+            });
+
+            if (response.ok) {
+                const place = await response.json();
+                setPlaces(prevPlaces => ({
+                    ...prevPlaces,
+                    [username]: [...(prevPlaces[username] || []), place],
+                }));
+            } else {
+                console.error('Error adding place:', await response.json());
+            }
+        } catch (error) {
+            console.error('Error adding place:', error);
+        }
     };
 
-    const removePlace = (username, placeId) => {
-        setPlaces(prevPlaces => ({
-            ...prevPlaces,
-            [username]: prevPlaces[username].filter(place => place.id !== placeId)
-        }));
+    const updatePlace = async (username, updatedPlace) => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/users/${username}/places/${updatedPlace.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedPlace),
+        });
+
+        if (response.ok) {
+            // After updating the place, refetch the user's places
+            fetchAllPlaces(users);
+        } else {
+            console.error('Error updating place:', await response.json());
+        }
+    } catch (error) {
+        console.error('Error during update:', error);
+    }
+};
+
+    const removePlace = async (username, placeId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/users/${username}/places/${placeId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                setPlaces(prevPlaces => ({
+                    ...prevPlaces,
+                    [username]: prevPlaces[username].filter(place => place.id !== placeId),
+                }));
+            } else {
+                console.error('Error removing place:', await response.json());
+            }
+        } catch (error) {
+            console.error('Error removing place:', error);
+        }
     };
 
     return (
-        <UserContext.Provider value={{ isLoggedIn, username, users, login, logout, register, places, addPlace, removePlace }}>
+        <UserContext.Provider value={{ isLoggedIn, username, users, login, logout, register, places, addPlace, updatePlace, removePlace }}>
             {children}
         </UserContext.Provider>
     );

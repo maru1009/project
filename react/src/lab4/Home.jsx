@@ -2,19 +2,19 @@
 import React from 'react';
 import { useAuth } from './UserContext';
 import { Link } from 'react-router-dom';
-import './Home.css';
+import './Home.css'
 
 const Home = () => {
     const { isLoggedIn, logout, username, users } = useAuth();
 
     return (
         <div className="home-container">
-            <h1 className="welcome-title">Home page </h1>
+            <h1 className="welcome-title">Нүүр хуудас </h1>
             <div className="user-info">
                 {!isLoggedIn ? (
-                    <p className="edit-places">Зураг үзэх сайт.</p>
+                    <p className="edit-places">Та нэвтрээгүй байна.</p>
                 ) : (
-                    <p className="logged-in-message">You are logged in as <strong>{username}</strong>.</p>
+                    <p className="logged-in-message">Сайн байна уу <strong>{username}</strong>.</p>
                 )}
             </div>
 

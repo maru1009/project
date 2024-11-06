@@ -1,8 +1,7 @@
-// src/lab4/Login.jsx
 import React, { useState } from 'react';
 import { useAuth } from './UserContext';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-import './Login.css';
+import './Login.css'
 
 const Login = () => {
     const { login } = useAuth();
@@ -27,7 +26,7 @@ const Login = () => {
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label>Username:</label>
+                    <label>Нэр:</label>
                     <input 
                         type="text" 
                         value={username} 
@@ -36,7 +35,7 @@ const Login = () => {
                     />
                 </div>
                 <div className="form-group">
-                    <label>Password:</label>
+                    <label>Нууц үг:</label>
                     <input 
                         type="password" 
                         value={password} 
@@ -44,10 +43,10 @@ const Login = () => {
                         required 
                     />
                 </div>
-                <button type="submit" className="btn">Login</button>
+                <button type="submit" className="btn">Нэвтрэх</button>
                 {error && <p className="error-message">{error}</p>} {/* Display error message */}
             </form>
-            <Link to="/" className="back-link">Back to Home</Link>
+            <Link to="/" className="back-link">Нүүр хуудас руу буцах</Link>
         </div>
     );
 };
