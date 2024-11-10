@@ -2,18 +2,18 @@
 import React from 'react';
 import { useAuth } from './UserContext';
 import { useParams } from 'react-router-dom';
-import './placeDetail.css';
+import './placeDetail.css'
 
 const PlaceDetail = () => {
     const { places } = useAuth();
-    const { pid } = useParams(); // Get the place ID from the URL
+    const { pid } = useParams();
     const uid = Object.keys(places).find(user => 
-        places[user].some(place => place.id === pid)
-    ); // Find the user who owns the place
-    const place = uid ? places[uid].find(place => place.id === pid) : null; // Find the specific place
+        places[user].some(place => place._id === pid)
+    ); 
+    const place = uid ? places[uid].find(place => place._id === pid) : null; // Find the specific place
 
     if (!place) {
-        return <p>Place not found.</p>;
+        return <p>Газар оддсонгүй</p>;
     }
 
     return (

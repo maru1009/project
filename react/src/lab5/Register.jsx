@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useAuth } from './UserContext';
 import { useNavigate, Link } from 'react-router-dom';
-import './Register.css';
+import './register.css'
 
 const Register = () => {
     const { register } = useAuth();
@@ -11,14 +11,14 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const isSuccess = await register(username, password); // Await the register function
+        const isSuccess = register(username, password);
         
         if (isSuccess) {
             navigate('/'); // Navigate to the home page on successful registration
         } else {
-            setError('Username already exists'); // Handle registration failure
+            setError('Хэрэглэгч үүссэн байна'); // Handle registration failure
         }
     };
 
@@ -28,7 +28,7 @@ const Register = () => {
             {error && <p className="error-message">{error}</p>}
             <form onSubmit={handleSubmit}>
                 <label>
-                    Username:
+                    Нэр:
                     <input
                         type="text"
                         value={username}
@@ -38,7 +38,7 @@ const Register = () => {
                 </label>
                 <br />
                 <label>
-                    Password:
+                    Нууц үг:
                     <input
                         type="password"
                         value={password}
@@ -47,9 +47,9 @@ const Register = () => {
                     />
                 </label>
                 <br />
-                <button type="submit" className="register-button">Register</button>
+                <button type="submit" className="register-button">Бүртгүүлэх</button>
             </form>
-            <Link to="/" className="back-link">Back to Home</Link>
+            <Link to="/" className="back-link">Нүүр хуудас руу буцах</Link>
         </div>
     );
 };

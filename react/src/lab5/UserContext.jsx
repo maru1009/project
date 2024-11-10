@@ -1,53 +1,68 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Create the UserContext
+// Define context
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
-    const [users, setUsers] = useState([]); // Initialize with an empty array
-    const [places, setPlaces] = useState([]); // Initialize with an empty array
+    const [users, setUsers] = useState([]);
+    const [places, setPlaces] = useState({});
 
+    // Fetch users from server
     useEffect(() => {
-        // Load users from the API on initial mount
         const fetchUsers = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/users');
-                if (!response.ok) throw new Error('Failed to fetch users');
+                const response = await fetch('http://localhost:3000/api/users');
                 const data = await response.json();
-                setUsers(data);
+                setUsers(data.users);
+                fetchAllPlaces(data.users);
             } catch (error) {
-                console.error(error);
+                console.error('Error fetching users:', error);
             }
         };
 
         fetchUsers();
-
-        const storedUsername = localStorage.getItem('username');
-        if (storedUsername) {
-            setIsLoggedIn(true);
-            setUsername(storedUsername);
-        }
     }, []);
+
+    // Fetch all places for all users
+    const fetchAllPlaces = async (users) => {
+        try {
+            const allPlaces = {};
+            for (const user of users) {
+                const response = await fetch(`http://localhost:3000/api/places/user/${user._id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    allPlaces[user.name] = data.places; // Use user name as the key
+                } else {
+                    console.error(`Error fetching places for ${user.name}:`, await response.json());
+                }
+            }
+            setPlaces(allPlaces);
+        } catch (error) {
+            console.error('Error fetching all places:', error);
+        }
+    };
 
     const login = async (userInput, password) => {
         try {
-            const response = await fetch('http://localhost:5000/api/users/login', {
+            const response = await fetch('http://localhost:3000/api/users/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username: userInput, password }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: userInput, password }),
             });
-            if (!response.ok) throw new Error('Invalid username or password');
-            const data = await response.json();
-            setIsLoggedIn(true);
-            setUsername(userInput);
-            localStorage.setItem('username', userInput);
-            return true;
+
+            if (response.ok) {
+                const data = await response.json();
+                setIsLoggedIn(true);
+                setUsername(data.user.name);
+                return true;
+            } else {
+                console.error('Login failed:', await response.json());
+                return false;
+            }
         } catch (error) {
-            console.error(error);
+            console.error('Error during login:', error);
             return false;
         }
     };
@@ -55,90 +70,98 @@ export const UserProvider = ({ children }) => {
     const logout = () => {
         setIsLoggedIn(false);
         setUsername('');
-        localStorage.removeItem('username');
     };
 
     const register = async (newUsername, newPassword) => {
         try {
-            const response = await fetch('http://localhost:5000/api/users/register', {
+            const response = await fetch('http://localhost:3000/api/users/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username: newUsername, password: newPassword }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newUsername, password: newPassword }),
             });
 
-            if (!response.ok) throw new Error('Registration failed');
-
-            const newUser = await response.json(); // Assuming the API returns the new user object
-            setUsers(prev => [...prev, newUser]);
-            setPlaces(prev => [...prev, { username: newUsername, places: [] }]); // Initialize places for new user
-            return true;
+            if (response.ok) {
+                const newUser = await response.json();
+                setUsers([...users, newUser]);
+                setPlaces(prevPlaces => ({ ...prevPlaces, [newUsername]: [] }));
+                return true;
+            } else {
+                console.error('Registration failed:', await response.json());
+                return false;
+            }
         } catch (error) {
-            console.error(error);
+            console.error('Error during registration:', error);
             return false;
         }
     };
 
     const addPlace = async (username, newPlace) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/places/${username}`, {
+            const response = await fetch(`http://localhost:3000/api/users/${username}/places`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newPlace),
             });
 
-            if (!response.ok) throw new Error('Failed to add place');
-            const addedPlace = await response.json();
-            setPlaces(prev => {
-                const userPlaces = prev.find(user => user.username === username);
-                if (userPlaces) {
-                    return prev.map(user => 
-                        user.username === username
-                            ? { ...user, places: [...user.places, addedPlace] }
-                            : user
-                    );
-                }
-                return prev;
-            });
+            if (response.ok) {
+                const place = await response.json();
+                setPlaces(prevPlaces => ({
+                    ...prevPlaces,
+                    [username]: [...(prevPlaces[username] || []), place],
+                }));
+            } else {
+                console.error('Error adding place:', await response.json());
+            }
         } catch (error) {
             console.error('Error adding place:', error);
         }
     };
 
+    const updatePlace = async (username, updatedPlace) => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/users/${username}/places/${updatedPlace._id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedPlace),
+        });
+
+        if (response.ok) {
+            // After updating the place, refetch the user's places
+            fetchAllPlaces(users);
+        } else {
+            console.error('Error updating place:', await response.json());
+        }
+    } catch (error) {
+        console.error('Error during update:', error);
+    }
+};
+
     const removePlace = async (username, placeId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/places/${username}/${placeId}`, {
+            const response = await fetch(`http://localhost:3000/api/users/${username}/places/${placeId}`, {
                 method: 'DELETE',
             });
 
-            if (!response.ok) throw new Error('Failed to remove place');
-            setPlaces(prev => {
-                const userPlaces = prev.find(user => user.username === username);
-                if (userPlaces) {
-                    return prev.map(user => 
-                        user.username === username
-                            ? { ...user, places: user.places.filter(place => place.id !== placeId) }
-                            : user
-                    );
-                }
-                return prev;
-            });
+            if (response.ok) {
+                setPlaces(prevPlaces => ({
+                    ...prevPlaces,
+                    [username]: prevPlaces[username].filter(place => place._id !== placeId),
+                }));
+            } else {
+                console.error('Error removing place:', await response.json());
+            }
         } catch (error) {
             console.error('Error removing place:', error);
         }
     };
 
     return (
-        <UserContext.Provider value={{ isLoggedIn, username, users, login, logout, register, places, addPlace, removePlace }}>
+        <UserContext.Provider value={{ isLoggedIn, username, users, login, logout, register, places, addPlace, updatePlace, removePlace }}>
             {children}
         </UserContext.Provider>
     );
 };
 
-// Custom hook to use the UserContext
 export const useAuth = () => {
     return useContext(UserContext);
 };

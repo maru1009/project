@@ -1,43 +1,54 @@
-// src/lab4/EditPlace.jsx
+
 import React, { useEffect, useState } from 'react';
-import { usePlaces } from './PlaceContext'; // Import PlaceContext
+import axios from 'axios';
+import { useAuth } from './UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import './EditPlace.css';
+import './EditPlace.css'
 
 const EditPlace = () => {
-    const { addPlace, updatePlace, places } = usePlaces();
+    const { addPlace, updatePlace, username, places } = useAuth();
     const navigate = useNavigate();
-    const { pid } = useParams(); 
-    const [place, setPlace] = useState({ name: '', image: '', description: ''});
-    const [error, setError] = useState('');
+    const { pid } = useParams(); // Get place ID from URL
+    const [place, setPlace] = useState({ name: '', image: '', description: '' });
+    const [error, setError] = useState(''); // State to hold error messages
 
+    // Load existing place data for editing
     useEffect(() => {
         if (pid) {
-            const existingPlace = places.find(place => place._id === pid);
+            const existingPlace = Object.values(places).flat().find(place => place._id === pid);
             if (existingPlace) {
                 setPlace(existingPlace);
             }
         }
     }, [pid, places]);
 
-    const handleSubmit = async (e) => {
+  
+
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (pid) {
-            await updatePlace(pid, place); // Update existing place
+            // Update existing place if pid is provided
+            updatePlace(username, place); // Assuming updatePlace is a function in UserContext
         } else {
-            await addPlace(place); // Add new place
+            // Add new place if no pid is provided
+            const newPlace = {
+                ...place,
+                id: Date.now().toString(), // Generate a unique ID
+            };
+            addPlace(username, newPlace);
         }
 
-        navigate(`/${place.userId}/places`); // Redirect to the user's places page
+        // Redirect to the user's places page after adding/updating
+        navigate(`/${username}/places`);
     };
 
     return (
         <div className="edit-place-container">
-            <h2>{pid ? 'Edit Place' : 'Add New Place'}</h2>
+            <h2>{pid ? 'Мэдээллийг өөрчлөх' : 'Газар нэмэх'}</h2>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Name:
+                    нэр:
                     <input
                         type="text"
                         value={place.name}
@@ -47,7 +58,7 @@ const EditPlace = () => {
                 </label>
                 <br />
                 <label>
-                    Image URL:
+                    Зураг:
                     <input
                         type="text"
                         value={place.image}
@@ -57,7 +68,7 @@ const EditPlace = () => {
                 </label>
                 <br />
                 <label>
-                    Description:
+                    Тайлбар:
                     <textarea
                         value={place.description}
                         onChange={(e) => setPlace({ ...place, description: e.target.value })}
@@ -65,9 +76,12 @@ const EditPlace = () => {
                     />
                 </label>
                 <br />
-                <button type="submit">{pid ? 'Update Place' : 'Add Place'}</button>
+                {error && <p className="error-message">{error}</p>}
+                <br />
+                <button type="submit">{pid ? 'Газрын мэдээлэл шинэчлэх' : 'Газар нэмэх'}</button>
             </form>
-            {error && <p className="error-message">{error}</p>}
+
+
         </div>
     );
 };

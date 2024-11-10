@@ -1,12 +1,12 @@
-// models/User.js
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 const userSchema = new mongoose.Schema({
-    id: { type: Number, unique: true }, // Sequential user ID
-    username: { type: String, required: true, unique: true },
-    name: { type: String },
-    email: { type: String, unique: true },
-    password: { type: String, required: true }
+    name: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+
+

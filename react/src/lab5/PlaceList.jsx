@@ -1,59 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+// src/lab4/PlaceList.jsx
+import React from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from './UserContext';
-import './PlaceList.css';
+import './PlaceList.css'
 
 const PlaceList = () => {
-    const { uid } = useParams(); // Get user ID from URL params
-    const { fetchUserPlaces } = useAuth(); // Get the fetchUserPlaces function from context
-    const [userPlaces, setUserPlaces] = useState([]); // State to store user's places
-    const [loading, setLoading] = useState(true); // Loading state
-    const [error, setError] = useState(null); // Error state
-    const navigate = useNavigate();
+    const { uid } = useParams();
+    const { places, username, removePlace } = useAuth();
+    const navigate = useNavigate(); // Use useNavigate for programmatic navigation
+    const userPlaces = places[uid] || [];
 
-    useEffect(() => {
-        const fetchPlaces = async () => {
-            setLoading(true); // Set loading to true before fetching
-            try {
-                const places = await fetchUserPlaces(uid); // Fetch places for the user
-                setUserPlaces(places); // Set the fetched places to state
-            } catch (error) {
-                setError(error.message); // Set error message if fetching fails
-            } finally {
-                setLoading(false); // Set loading to false regardless of success or failure
-            }
-        };
-
-        fetchPlaces();
-    }, [uid, fetchUserPlaces]);
-
-    if (loading) return <p>Loading places...</p>; // Loading message
-    if (error) return <p>Error: {error}</p>; // Display error message
+    const handleRemovePlace = (placeId) => {
+        removePlace(uid, placeId); // Call removePlace function to remove the place
+    };
 
     return (
         <div className="place-list-container">
-            <button className="back-button" onClick={() => navigate('/')}>Back to Home</button>
+            <button className="back-button" onClick={() => navigate('/')}>Нүүр хуудас руу буцах</button>
             <h2>{uid}'s Places</h2>
             {userPlaces.length === 0 ? (
-                <p>No places found for this user.</p>
+                <p>Газар байхгүй байна.</p>
             ) : (
-                userPlaces.map(({ _id, name, image, description }) => (
-                    <div className="place-item" key={_id}>
-                        <Link to={`/places/${_id}`}>
-                            <h3>{name}</h3>
+                userPlaces.map(place => (
+                    <div className="place-item" key={place._id}>
+                        <Link to={`/places/${place._id}`}>
+                            <h3>{place.name}</h3>
                         </Link>
-                        <img src={image} alt={name} className="place-image" />
-                        <p>{description}</p>
-                        <Link to={`/places/${_id}/edit`}>
-                            <button className="edit-button">Edit Place</button>
-                        </Link>
+                        <img src={place.image} alt={place.name} className="place-image" />
+                        <p>{place.description}</p>
+                        {uid === username && (
+                            <>
+                                <Link to={`/places/${place._id}/edit`}>
+                                    <button className="edit-button">Edit Place</button>
+                                </Link>
+                                <button className="remove-button" onClick={() => handleRemovePlace(place._id)}>Remove Place</button>
+                            </>
+                        )}
                     </div>
                 ))
             )}
-            {/* Always show the button to add a new place for the user */}
-            <Link to="/places/new">
-                <button className="add-button">Add New Place</button>
-            </Link>
+            {/* Only show the Add New Place button for the logged-in user */}
+            {uid === username && (
+                <Link to="/places/new">
+                    <button className="add-button">Газар нэмэх</button>
+                </Link>
+            )}
         </div>
     );
 };
