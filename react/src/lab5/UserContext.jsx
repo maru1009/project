@@ -97,7 +97,7 @@ export const UserProvider = ({ children }) => {
 
     const addPlace = async (username, newPlace) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/users/${username}/places`, {
+            const response = await fetch(`http://localhost:3000/api/places/${username}/places`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newPlace),
@@ -119,7 +119,7 @@ export const UserProvider = ({ children }) => {
 
     const updatePlace = async (username, updatedPlace) => {
     try {
-        const response = await fetch(`http://localhost:3000/api/users/${username}/places/${updatedPlace._id}`, {
+        const response = await fetch(`http://localhost:3000/api/places/${username}/places/${updatedPlace._id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedPlace),
@@ -138,7 +138,7 @@ export const UserProvider = ({ children }) => {
 
     const removePlace = async (username, placeId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/users/${username}/places/${placeId}`, {
+            const response = await fetch(`http://localhost:3000/api/places/${username}/places/${placeId}`, {
                 method: 'DELETE',
             });
 
