@@ -1,14 +1,14 @@
-// src/lab4/App.jsx
+// src/lab6/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { UserProvider } from './UserContext';
+import { UserProvider } from './context/UserContext';
 import Home from './Home';
-import Login from './Login';
-import Register from './Register';
-import PlaceList from './PlaceList';
-import EditPlace from './EditPlace'; // Used for both adding and editing
-import PlaceDetail from './PlaceDetail';
-
+import Login from './auth/Login';
+import Register from './auth/Register';
+import PlaceList from './places/PlaceList';
+import EditPlace from './places/EditPlace'; // Used for both adding and editing
+import PlaceDetail from './places/PlaceDetail';
+import ProtectedRoute from './ProtectedRoute'; // Import the ProtectedRoute component
 
 const App = () => {
     return (
@@ -18,10 +18,14 @@ const App = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/places/new" element={<EditPlace />} /> 
+                    
+                    {/* Protect these routes */}
+                    <Route path="/places/new" element={<ProtectedRoute element={<EditPlace />} />} />
+                    <Route path="/places/:pid/edit" element={<ProtectedRoute element={<EditPlace />} />} />
+
                     <Route path="/places/:pid" element={<PlaceDetail />} />
-                    <Route path="/places/:pid/edit" element={<EditPlace />} />
-                    <Route path="/:uid/places" element={<PlaceList />} /> 
+                    <Route path="/:uid/places" element={<PlaceList />} />
+                    
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </Router>

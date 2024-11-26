@@ -1,8 +1,8 @@
 // src/lab4/Home.jsx
 import React from 'react';
-import { useAuth } from './UserContext';
+import { useAuth } from './context/UserContext';
 import { Link } from 'react-router-dom';
-import './Home.css'
+import './styles/Home.css'
 
 const Home = () => {
     const { isLoggedIn, logout, username, users } = useAuth();
@@ -31,14 +31,14 @@ const Home = () => {
                 {!isLoggedIn ? (
                     <>
                         <Link to="/login">
-                            <button className="btn">Login</button>
+                            <button className="btn">Нэвтрэх</button>
                         </Link>
                         <Link to="/register">
-                            <button className="btn">Register</button>
+                            <button className="btn">Бүртгүүлэх</button>
                         </Link>
                     </>
                 ) : (
-                    <button className="btn logout-btn" onClick={logout}>Logout</button>
+                    <button className="btn logout-btn" onClick={logout}>Гарах</button>
                 )}
             </div>
         </div>

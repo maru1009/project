@@ -1,87 +1,104 @@
-const Place = require('../models/Place');
+// controllers/placeController.js
 const User = require('../models/User');
+const Place = require('../models/Place');
 
 // Get places for a user
-const getPlacesForUser = async (req, res) => {
-    const { username } = req.params;
-    try {
-        const user = await User.findOne({ name: username });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+const getPlaces = async (req, res) => {
+    const { uid } = req.params;
 
-        const userPlaces = await Place.find({ userId: user._id });
-        res.json({ places: userPlaces });
-    } catch (err) {
-        res.status(500).json({ message: 'Error fetching places', error: err });
+    try {
+        const user = await User.findById(uid);  // Get user by ObjectId
+        if (user) {
+            const places = await Place.find({ userId: user._id }); // Get places by userId
+            return res.status(200).json({ places });
+        } else {
+            return res.status(404).json({ message: 'Хэрэглэгч олдсонгүй' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Газрын мэдээллийг татахад алдаа гарлаа.' });
     }
 };
 
 // Add a new place for a user
-const addPlaceForUser = async (req, res) => {
+const addPlace = async (req, res) => {
     const { username } = req.params;
     const { name, image, description } = req.body;
 
     try {
         const user = await User.findOne({ name: username });
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: 'Хэрэглэгч олдсонгүй' });
         }
 
-        const newPlace = new Place({ name, image, description, userId: user._id });
+        const newPlace = new Place({
+            name,
+            image,
+            description,
+            userId: user._id
+        });
+
         await newPlace.save();
-        res.status(201).json(newPlace);
-    } catch (err) {
-        res.status(500).json({ message: 'Error adding place', error: err });
+        return res.status(201).json(newPlace);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Газар нэмэхэд алдаа гарлаа.' });
     }
 };
 
 // Update a place for a user
-const updatePlaceForUser = async (req, res) => {
+const updatePlace = async (req, res) => {
     const { username, placeId } = req.params;
     const { name, image, description } = req.body;
 
     try {
         const user = await User.findOne({ name: username });
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: 'Хэрэглэгч олдсонгүй' });
         }
 
-        const place = await Place.findOneAndUpdate(
-            { _id: placeId, userId: user._id },
-            { name, image, description },
-            { new: true }
-        );
-
+        const place = await Place.findOne({ _id: placeId, userId: user._id });
         if (!place) {
-            return res.status(404).json({ message: 'Place not found' });
+            return res.status(404).json({ message: 'Газар олдсонгүй' });
         }
 
-        res.json(place);
-    } catch (err) {
-        res.status(500).json({ message: 'Error updating place', error: err });
+        place.name = name || place.name;
+        place.image = image || place.image;
+        place.description = description || place.description;
+
+        await place.save();
+        return res.status(200).json(place);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Газрыг шинчлэхэд алдаа гарлаа.' });
     }
 };
 
 // Delete a place for a user
-const deletePlaceForUser = async (req, res) => {
+const deletePlace = async (req, res) => {
     const { username, placeId } = req.params;
 
     try {
         const user = await User.findOne({ name: username });
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: 'Хэрэглэгч олдсонгүй' });
         }
 
         const place = await Place.findOneAndDelete({ _id: placeId, userId: user._id });
         if (!place) {
-            return res.status(404).json({ message: 'Place not found' });
+            return res.status(404).json({ message: 'Газар олдсонгүй' });
         }
 
-        res.status(204).send();
-    } catch (err) {
-        res.status(500).json({ message: 'Error deleting place', error: err });
+        return res.status(204).send(); // No content to send back on successful deletion
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Газар устгахад алдаа гарлаа' });
     }
 };
 
-module.exports = { getPlacesForUser, addPlaceForUser, updatePlaceForUser, deletePlaceForUser };
+module.exports = {
+    getPlaces,
+    addPlace,
+    updatePlace,
+    deletePlace
+};
