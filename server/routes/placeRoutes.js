@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const placeController = require('../controllers/placeController');
-const authMiddleware = require('../middleware/authMiddleware');
 
 // Protect the route to get and add places (uncomment after implementing authMiddleware)
 // router.use(authMiddleware);

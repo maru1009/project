@@ -1,0 +1,104 @@
+/* src/lab4/PlaceList.css */
+.place-list-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.place-list-container:hover {
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
+}
+
+.back-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-bottom: 25px;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.back-button:hover {
+    background-color: #555;
+    transform: scale(1.05); /* Slight scale effect */
+}
+
+.place-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.place-item:hover {
+    transform: translateY(-5px); /* Lift the item on hover */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.place-item h3 {
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.place-item p {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.place-image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    object-fit: cover;
+}
+
+.edit-button, .remove-button, .add-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    align-self: flex-start;
+}
+
+.edit-button:hover, .remove-button:hover, .add-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Slight scale effect */
+}
+
+.back-button {
+    margin-left: auto;
+}
+
+@media (max-width: 768px) {
+    .place-list-container {
+        padding: 20px;
+    }
+
+    .place-item {
+        padding: 15px;
+    }
+
+    .place-image {
+        max-width: 100%;
+    }
+}

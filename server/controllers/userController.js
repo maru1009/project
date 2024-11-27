@@ -24,7 +24,7 @@ const registerUser = async (req, res) => {
     }
 };
 
-// User login
+
 const loginUser = async (req, res) => {
     const { name, password } = req.body;
 
@@ -41,21 +41,29 @@ const loginUser = async (req, res) => {
         }
 
         // Generate JWT token
-        const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-        // Set token as a cookie
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+        req.session.userId = user._id;
+        req.session.username = user.name
         res.status(200).json({ message: 'Амжилттай нэвтэрлээ', user });
     } catch (error) {
         res.status(500).json({ message: 'Нэвтрэхэд алдаа гарлаа.' });
     }
 };
+;
+
+
+
 
 // Logout user
 const logoutUser = (req, res) => {
-    res.clearCookie('token'); // Clear the JWT cookie
-    res.status(200).json({ message: 'Амжилттай гарлаа.' });
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Сешн устгахад алдаа гарлаа:', err);
+            return res.status(500).json({ message: 'Гарахад алдаа гарлаа.' });
+        }
+        res.status(200).json({ message: 'Амжилттай гарлаа.' });
+    });
 };
+
 
 // Get all users (admin or protected route)
 const getAllUsers = async (req, res) => {
@@ -68,19 +76,15 @@ const getAllUsers = async (req, res) => {
 };
 
 // Validate session with JWT token
-const validateSession = (req, res) => {
-    const token = req.cookies.token; // Assume the token is stored in a cookie
-
-    if (!token) {
-        return res.status(401).json({ message: 'Токен алга байна' });
+const validateSession = async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ message: 'Хэрэглэгч нэвтрээгүй байна.' });
     }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Validate token
-        res.status(200).json({ username: decoded.name });
-    } catch (error) {
-        res.status(401).json({ message: 'Буруу эсвэл хугацаа нь дууссан токен байна.' });
-    }
+    res.status(200).json({
+        message: 'Session баталгаажлаа',
+        username: req.session.username,
+    });
 };
 
 module.exports = { getAllUsers, registerUser, loginUser, logoutUser, validateSession };
